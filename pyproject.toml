@@ -7,8 +7,55 @@ authors = [
     { name = "Felix Berkenkamp", email = "fberkenkamp@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "torch>=2.5.0",
+]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+torch = {index = "pytorch-cpu"}
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "pytest-sugar>=1.0.0",
+    "pytest>=8.3.4",
+    "pytest-xdist>=3.6.1",
+    "ruff>=0.8.3",
+    "mypy[mypyc]>=1.13.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["src", "tests"]
+minversion = 8.3
+addopts = "-p 'no:legacypath' --doctest-modules"
+filterwarnings = [
+    "error",
+    "ignore:Decorating classes is deprecated:FutureWarning:torch",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+warn_unused_configs = true
+files = ["src"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E", # Pycodestyle Errors
+    "F", # Pyflakes
+    "UP", # Auto-upgrading of new Python features
+    "I", # Sort imports
+    "RUF", # Rules from ruff
+    "NPY", # Rules for numpy
+    "PERF", # Performance issues
+]
